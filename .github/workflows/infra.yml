@@ -3,7 +3,7 @@ name: Terraform Infra Pipeline
 on:
   push:
     branches:
-      - afadatafat
+      - main
 
 jobs:
 
@@ -20,7 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-      - run: terraform init
+
+      - name: Terraform Init
+        working-directory: devops-infra
+        run: terraform init
 
   validate:
     runs-on: ubuntu-latest
@@ -28,7 +31,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-      - run: terraform validate
+
+      - name: Terraform Validate
+        working-directory: devops-infra
+        run: terraform validate
 
   plan:
     runs-on: ubuntu-latest
@@ -39,11 +45,13 @@ jobs:
 
       - name: Configure AWS
         run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}   # 🔴 ADD SECRET
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # 🔴 ADD SECRET
-          aws configure set region ap-south-1   # 🔴 UPDATE if region changes
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ap-south-1
 
-      - run: terraform plan
+      - name: Terraform Plan
+        working-directory: devops-infra
+        run: terraform plan
 
   apply:
     runs-on: ubuntu-latest
@@ -54,8 +62,10 @@ jobs:
 
       - name: Configure AWS
         run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}   # 🔴 ADD SECRET
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # 🔴 ADD SECRET
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set region ap-south-1
 
-      - run: terraform apply -auto-approve   # 🔴 Auto apply (for learning)
+      - name: Terraform Apply
+        working-directory: devops-infra
+        run: terraform apply -auto-approve
