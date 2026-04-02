@@ -32,6 +32,11 @@ jobs:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
 
+      # 🔥 ADD THIS
+      - name: Terraform Init (for validate)
+        working-directory: devops-infra
+        run: terraform init
+
       - name: Terraform Validate
         working-directory: devops-infra
         run: terraform validate
@@ -49,6 +54,11 @@ jobs:
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set region ap-south-1
 
+      # 🔥 ADD THIS
+      - name: Terraform Init (for plan)
+        working-directory: devops-infra
+        run: terraform init
+
       - name: Terraform Plan
         working-directory: devops-infra
         run: terraform plan
@@ -65,6 +75,11 @@ jobs:
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws configure set region ap-south-1
+
+      # 🔥 ADD THIS
+      - name: Terraform Init (for apply)
+        working-directory: devops-infra
+        run: terraform init
 
       - name: Terraform Apply
         working-directory: devops-infra
