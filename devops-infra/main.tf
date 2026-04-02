@@ -31,6 +31,7 @@ module "eks" {
   # Using default VPC (safe for beginners)
   vpc_id     = data.aws_vpc.default.id
   subnet_ids = data.aws_subnets.default.ids
+  create_cloudwatch_log_group = false
 
   #########################################
   # 🔹 Node Group (EC2 instances)
