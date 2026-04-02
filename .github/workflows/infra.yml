@@ -3,7 +3,7 @@ name: Terraform Infra Pipeline
 on:
   push:
     branches:
-      - mai
+      - main
 
 jobs:
 
