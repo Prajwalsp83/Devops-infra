@@ -43,7 +43,7 @@ module "eks" {
       max_size     = 2
       min_size     = 1
 
-      instance_types = ["t3.medium"]   # 🔴 UPDATE if you want cheaper (t3.small)
+      instance_types = ["t3.small"]   # 🔴 UPDATE if you want cheaper (t3.small)
       ami_type = "AL2_x86_64"
     }
   }
