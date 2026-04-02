@@ -7,80 +7,36 @@ on:
 
 jobs:
 
-  setup:
+  terraform:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: devops-infra   # 🔥 your inner folder
+
     steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-      - run: terraform -version
 
-  init:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Terraform Init
-        working-directory: devops-infra
-        run: terraform init
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
 
-  validate:
-    runs-on: ubuntu-latest
-    needs: init
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
+      - name: Configure AWS Credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ap-south-1
 
-      # 🔥 ADD THIS
-      - name: Terraform Init (for validate)
-        working-directory: devops-infra
-        run: terraform init
+      # 🔥 IMPORTANT: Backend initialization
+      - name: Terraform Init (Backend)
+        run: terraform init -reconfigure
 
       - name: Terraform Validate
-        working-directory: devops-infra
         run: terraform validate
 
-  plan:
-    runs-on: ubuntu-latest
-    needs: validate
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-
-      - name: Configure AWS
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set region ap-south-1
-
-      # 🔥 ADD THIS
-      - name: Terraform Init (for plan)
-        working-directory: devops-infra
-        run: terraform init
-
       - name: Terraform Plan
-        working-directory: devops-infra
         run: terraform plan
 
-  apply:
-    runs-on: ubuntu-latest
-    needs: plan
-    steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
-
-      - name: Configure AWS
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set region ap-south-1
-
-      # 🔥 ADD THIS
-      - name: Terraform Init (for apply)
-        working-directory: devops-infra
-        run: terraform init
-
       - name: Terraform Apply
-        working-directory: devops-infra
         run: terraform apply -auto-approve
