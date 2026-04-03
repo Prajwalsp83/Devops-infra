@@ -26,7 +26,7 @@ module "eks" {
   version = "19.0.0"
 
   cluster_name    = var.cluster_name   # 🔴 Comes from variables.tf
-  cluster_version = "1.33"             # 🔴 UPDATE if needed (optional)
+  cluster_version = "1.28"             # 🔴 UPDATE if needed (optional)
 
   # Using default VPC (safe for beginners)
   vpc_id     = data.aws_vpc.default.id
