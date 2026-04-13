@@ -12,7 +12,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: devops-infra   # 🔥 your inner folder
+        working-directory: devops-infra   ##🔥 your inner folder
 
     steps:
 
